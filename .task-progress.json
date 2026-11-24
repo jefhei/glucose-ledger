@@ -5,7 +5,7 @@
   "build_plan": "BUILD_PLAN.md",
   "created": "2026-11-24",
   "complete": false,
-  "current_task": "M0-T1",
+  "current_task": "M1-T1",
   "blocked_on": null,
   "milestones": [
     {
@@ -76,10 +76,10 @@
         {
           "id": "M1-T1",
           "desc": "deploy/docker-compose.yml, pinned images, LAN bind",
-          "status": "pending",
+          "status": "done",
           "human_gated": false,
           "depends_on": [],
-          "commit": null
+          "commit": "47dcfa4"
         },
         {
           "id": "M1-T2",
