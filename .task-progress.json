@@ -1,0 +1,468 @@
+{
+  "version": 1,
+  "project": "glucose-ledger",
+  "prd": "PRD.md",
+  "build_plan": "BUILD_PLAN.md",
+  "created": "2026-11-24",
+  "complete": false,
+  "current_task": null,
+  "blocked_on": null,
+  "milestones": [
+    {
+      "milestone": "M0 \u2014 Read-path gate",
+      "tasks": [
+        {
+          "id": "H1",
+          "desc": "Buy one Stelo sensor pack (not a subscription)",
+          "status": "pending",
+          "human_gated": true,
+          "depends_on": [],
+          "commit": null
+        },
+        {
+          "id": "M0-T1",
+          "desc": "Throwaway staging stack under /tmp/ns-spike",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [],
+          "commit": null
+        },
+        {
+          "id": "H2",
+          "desc": "Pair xDrip+ to the sensor; confirm readings after warmup",
+          "status": "pending",
+          "human_gated": true,
+          "depends_on": [
+            "M0-T1",
+            "H1"
+          ],
+          "commit": null
+        },
+        {
+          "id": "M0-T2",
+          "desc": "24h coverage probe -> spike/coverage.md",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "H2"
+          ],
+          "commit": null
+        },
+        {
+          "id": "M0-T3",
+          "desc": "Verdict deliverable -> spike/VERDICT.md",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M0-T2"
+          ],
+          "commit": null
+        },
+        {
+          "id": "H3",
+          "desc": "Approve the M0 verdict",
+          "status": "pending",
+          "human_gated": true,
+          "depends_on": [
+            "M0-T3"
+          ],
+          "commit": null
+        }
+      ]
+    },
+    {
+      "milestone": "M1 \u2014 Stack & access control",
+      "tasks": [
+        {
+          "id": "M1-T1",
+          "desc": "deploy/docker-compose.yml, pinned images, LAN bind",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [],
+          "commit": null
+        },
+        {
+          "id": "M1-T2",
+          "desc": "Config loader for ~/glucose/secret.env (0600)",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M1-T1"
+          ],
+          "commit": null
+        },
+        {
+          "id": "M1-T3",
+          "desc": "Hardening env + deploy/README.md exposure notes",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M1-T1"
+          ],
+          "commit": null
+        },
+        {
+          "id": "M1-T4",
+          "desc": "Auth proof test: unauth 401 / auth 200",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M1-T2"
+          ],
+          "commit": null
+        },
+        {
+          "id": "M1-T5",
+          "desc": "make stack-up/down/status + survivability check",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M1-T1"
+          ],
+          "commit": null
+        },
+        {
+          "id": "M1-T6",
+          "desc": "Secret-leak guard test over tracked files",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M1-T2"
+          ],
+          "commit": null
+        }
+      ]
+    },
+    {
+      "milestone": "M2 \u2014 Durability",
+      "tasks": [
+        {
+          "id": "M2-T1",
+          "desc": "scripts/backup.sh with 14-day rotation",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M1-T1"
+          ],
+          "commit": null
+        },
+        {
+          "id": "M2-T2",
+          "desc": "scripts/restore_drill.sh with count reconciliation",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M2-T1"
+          ],
+          "commit": null
+        },
+        {
+          "id": "M2-T3",
+          "desc": "Cron wrapper for backup + failure alert",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M2-T1"
+          ],
+          "commit": null
+        },
+        {
+          "id": "M2-T4",
+          "desc": "Record measured drill runtime in deploy/README.md",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M2-T2"
+          ],
+          "commit": null
+        }
+      ]
+    },
+    {
+      "milestone": "M3 \u2014 ETL & mirror",
+      "tasks": [
+        {
+          "id": "M3-T1",
+          "desc": "fixtures/: clean day, gap day, warmup day, compression dip, CSV",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [],
+          "commit": null
+        },
+        {
+          "id": "M3-T2",
+          "desc": "SQLite schema + migrations",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M3-T1"
+          ],
+          "commit": null
+        },
+        {
+          "id": "M3-T3",
+          "desc": "Nightscout client with watermark + retries",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M3-T2"
+          ],
+          "commit": null
+        },
+        {
+          "id": "M3-T4",
+          "desc": "INSERT OR IGNORE + idempotency test",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M3-T3"
+          ],
+          "commit": null
+        },
+        {
+          "id": "M3-T5",
+          "desc": "CSV importer -> imports_raw only",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M3-T2"
+          ],
+          "commit": null
+        },
+        {
+          "id": "M3-T6",
+          "desc": "CLI: sync / status",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M3-T3"
+          ],
+          "commit": null
+        }
+      ]
+    },
+    {
+      "milestone": "M4 \u2014 Metrics & quality flags",
+      "tasks": [
+        {
+          "id": "M4-T1",
+          "desc": "metrics_daily: mean, TIR/TBR/TAR, CV%, GMI, coverage",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M3-T2"
+          ],
+          "commit": null
+        },
+        {
+          "id": "M4-T2",
+          "desc": "quality_flags: warmup, seam, gap, compression",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M4-T1"
+          ],
+          "commit": null
+        },
+        {
+          "id": "M4-T3",
+          "desc": "Min-data gate -> insufficient_data",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M4-T1"
+          ],
+          "commit": null
+        },
+        {
+          "id": "M4-T4",
+          "desc": "Golden fixture values pinned",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M4-T2"
+          ],
+          "commit": null
+        },
+        {
+          "id": "M4-T5",
+          "desc": "Determinism test + code version stamp",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M4-T1"
+          ],
+          "commit": null
+        },
+        {
+          "id": "M4-T6",
+          "desc": "Postprandial iAUC + peak delta helper",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M4-T1",
+            "M3-T5"
+          ],
+          "commit": null
+        }
+      ]
+    },
+    {
+      "milestone": "M5 \u2014 Report & delivery",
+      "tasks": [
+        {
+          "id": "M5-T1",
+          "desc": "report.py: coverage first, then metrics, then flags",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M4-T4"
+          ],
+          "commit": null
+        },
+        {
+          "id": "M5-T2",
+          "desc": "Versioned caveat block from output",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M5-T1"
+          ],
+          "commit": null
+        },
+        {
+          "id": "M5-T3",
+          "desc": "Cron: nightly sync + weekly report to Telegram/vault",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M5-T1",
+            "M3-T6"
+          ],
+          "commit": null
+        },
+        {
+          "id": "M5-T4",
+          "desc": "Banned-phrase wording test",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M5-T1"
+          ],
+          "commit": null
+        },
+        {
+          "id": "M5-T5",
+          "desc": "Exercise insufficient_data path end-to-end",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M5-T1"
+          ],
+          "commit": null
+        },
+        {
+          "id": "H4",
+          "desc": "Read one real report; sign off wording",
+          "status": "pending",
+          "human_gated": true,
+          "depends_on": [
+            "M5-T3"
+          ],
+          "commit": null
+        }
+      ]
+    },
+    {
+      "milestone": "M6 \u2014 Import-only path (critical if M0 fails)",
+      "tasks": [
+        {
+          "id": "M6-T1",
+          "desc": "Lingo/Clarity CSV normaliser, source=import",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M3-T5"
+          ],
+          "commit": null
+        },
+        {
+          "id": "M6-T2",
+          "desc": "Import-scoped metrics view",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M6-T1"
+          ],
+          "commit": null
+        },
+        {
+          "id": "M6-T3",
+          "desc": "Daily-cadence report variant",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M6-T2"
+          ],
+          "commit": null
+        }
+      ]
+    },
+    {
+      "milestone": "M7 \u2014 Experiments & reach",
+      "tasks": [
+        {
+          "id": "M7-T1",
+          "desc": "N-of-1 experiment runner",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M4-T6"
+          ],
+          "commit": null
+        },
+        {
+          "id": "M7-T2",
+          "desc": "Result output with sample-size warning + inconclusive branch",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M7-T1"
+          ],
+          "commit": null
+        },
+        {
+          "id": "M7-T3",
+          "desc": "Tailscale access for off-LAN uploads",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M1-T5"
+          ],
+          "commit": null
+        },
+        {
+          "id": "M7-T4",
+          "desc": "Grafana dashboard over the mirror",
+          "status": "pending",
+          "human_gated": false,
+          "depends_on": [
+            "M4-T1"
+          ],
+          "commit": null
+        },
+        {
+          "id": "H5",
+          "desc": "Week-4 anxiety check",
+          "status": "pending",
+          "human_gated": true,
+          "depends_on": [
+            "M5-T3"
+          ],
+          "commit": null
+        }
+      ]
+    }
+  ],
+  "review_log": []
+}
