@@ -1,4 +1,4 @@
-PY ?= python3
+PY ?= $(if $(wildcard .venv/bin/python),.venv/bin/python,python3)
 STACK_DIR ?= deploy
 
 .PHONY: verify lint test stack-up stack-down stack-status backup drill sync status

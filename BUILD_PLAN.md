@@ -170,10 +170,14 @@ ignore it?
 1. Read `.task-progress.json` **first**, then this file, then `PRD.md`. The tracker is
    fresher than the checkboxes.
 2. Resolve the next task by **dependency order**, never visual order. Ties: lowest
-   milestone, then lowest task number.
+   milestone, then lowest task number. **Resolution considers only non-`[HUMAN]` tasks:**
+   a machine task is ready when all of its *machine* dependencies are done. Human tasks
+   never block machine work — M0's sensor work and M1–M5's build work are independent
+   tracks, and treating H1 as a blocker would stall the whole plan behind a purchase.
 3. Exactly **one task per run**, then stop. A job that gets ahead produces an unreviewed
    diff nobody reads.
-4. `[HUMAN]` tasks are never attempted. Report `blocked on <id>` once and stop.
+4. `[HUMAN]` tasks are never attempted. List the ones still pending as an
+   `awaiting human:` line in the report; never simulate the hardware, never mark one done.
 5. Read the existing source before writing new code; extend tests with every task.
 6. `make verify` before every commit. Commit `feat:` then a separate `chore:` for the
    tracker. No remote → commit locally and skip the push.
