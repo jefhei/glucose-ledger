@@ -137,7 +137,7 @@ constraints at once — live data, no vendor cloud, runs on hardware already own
 
 | ID | Feature | Description | Priority |
 |---|---|---|---|
-| F1 | Nightscout stack | `docker compose`: `nightscout/cgm-remote-monitor` (v15.0.9 at time of writing) + MongoDB, pinned tags, `~/glucose/stack/`, `restart: unless-stopped`. Mongo major version pinned deliberately — the docs warn that a newer Mongo must not be pointed at an old data directory. | P0 |
+| F1 | Nightscout stack | `docker compose`: `nightscout/cgm-remote-monitor` (v15.0.9 at time of writing) + MongoDB, pinned tags, `~/glucose/stack/`, `restart: unless-stopped`. Mongo major version pinned deliberately — the docs warn that a newer Mongo must not be pointed at an old data directory. **Measured 2026-11-24: the debian2 CPU (Pentium Gold G5420) has no AVX, so MongoDB 5.0+ dies with SIGILL (`exit=132`); `mongo:4.4` is the newest that runs on this host** — see `spike/README.md`. | P0 |
 | F2 | Auth & exposure control | `API_SECRET` generated (32+ bytes) and stored `0600`; `AUTH_DEFAULT_ROLES=denied`; site bound to LAN only (no port forward). A proof test asserts an unauthenticated request gets 401. | P0 |
 | F3 | Live ingest path | xDrip+ on the A15 paired to a Stelo sensor, uploading to `https://<token>@<host>/api/v1`. Verified by watching `/api/v1/entries` grow with no manual step. | P0 |
 | F4 | Backups + a restore drill | Nightly `mongodump` to `~/backups/glucose/`, 14-day rotation. **Restore is executed once into a scratch container and the entry count reconciled** — an unverified backup is a hope. | P0 |
@@ -177,7 +177,7 @@ constraints at once — live data, no vendor cloud, runs on hardware already own
                         │   docker compose                      │
                         │   ├─ nightscout/cgm-remote-monitor    │
                         │   │    :1337  /api/v1/entries         │
-                        │   └─ mongo:7 (pinned)  ← mongodump/24h│
+                        │   └─ mongo:4.4 (pinned)← mongodump/24h│
                         │   bind: LAN only, AUTH_DEFAULT_ROLES  │
                         └───────────────┬───────────────────────┘
                                         │ nightly pull (API, read token)

@@ -1,0 +1,47 @@
+# Throwaway Nightscout staging stack for the M0 read-path spike (BUILD_PLAN M0-T1).
+#
+# It exists for one question: can xDrip+ push readings to a Nightscout instance on
+# hardware we own? Nothing here is the production stack (that is deploy/, M1-T1).
+#
+# Deliberately unhardened: AUTH_DEFAULT_ROLES is left at the image default, so reads
+# may be anonymous while the spike runs. M1-T3 sets AUTH_DEFAULT_ROLES=denied; do not
+# copy this file forward as the deployable.
+#
+# No secret lives in this file. scripts/ns_spike.sh renders it into /tmp/ns-spike with
+# SPIKE_API_SECRET / SPIKE_BIND_IP supplied from a 0600 env file, binds the UI port to
+# the LAN address only (no 0.0.0.0, no port forward) and tears the whole thing down
+# with `docker compose down -v`.
+#
+# Reproduce the render by hand:
+#   SPIKE_API_SECRET=<hex> SPIKE_BIND_IP=192.168.0.10 docker compose -f <this file> config
+
+name: ns-spike
+
+services:
+  mongo:
+    # 4.4 is the last MongoDB that runs without AVX. The debian2 host CPU (Pentium Gold
+    # G5420) has no AVX, and 5.0+ dies with SIGILL there — measured 2026-11-24, exit 132.
+    image: mongo:4.4
+    restart: "no"
+    volumes:
+      - mongo_data:/data/db
+    # No `ports:` on purpose — the database is reachable only on the compose network.
+
+  nightscout:
+    image: nightscout/cgm-remote-monitor:15.0.9
+    restart: "no"
+    depends_on:
+      - mongo
+    environment:
+      MONGO_CONNECTION: mongodb://mongo:27017/nightscout
+      API_SECRET: ${SPIKE_API_SECRET:?SPIKE_API_SECRET must be set (see scripts/ns_spike.sh)}
+      DISPLAY_UNITS: mg/dl
+      TIME_FORMAT: "24"
+      TZ: America/Chicago
+      INSECURE_USE_HTTP: "true"
+    ports:
+      # Host IP is a required variable: the spike is LAN-bound, never all-interfaces.
+      - "${SPIKE_BIND_IP:?SPIKE_BIND_IP must be set}:${SPIKE_PORT:-1337}:1337"
+
+volumes:
+  mongo_data:

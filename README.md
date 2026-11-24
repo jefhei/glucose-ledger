@@ -17,8 +17,11 @@ Path Decision Record).
 
 ## Status
 
-Seeded 2026-11-24. **No tasks executed.** Blocked on H1 (buy one Stelo sensor pack) for
-the read-path gate; M1–M5 are machine-buildable without hardware.
+Seeded 2026-11-24. **M0-T1 done:** the throwaway Nightscout staging stack renders,
+verifies (authorised write + read-back) and tears itself down — see `spike/README.md`,
+which also records that MongoDB 5.0+ cannot run on this host (no AVX). Still blocked on
+H1 (buy one Stelo sensor pack) for the read-path gate; M1–M5 are machine-buildable
+without hardware.
 
 ## Layout
 
@@ -28,7 +31,7 @@ src/        the glucoseledger package (ETL, metrics, report)
 tests/      pytest suite + invariant tests
 fixtures/   checked-in API payloads and CSV samples
 scripts/    backup / restore-drill / cron wrappers
-spike/      the M0 read-path verdict and its evidence
+spike/      the M0 read-path verdict, its evidence, and the throwaway staging stack
 ```
 
 Deployment (not in this repo): `~/glucose/` for stack + data + secrets, `~/backups/glucose/`
