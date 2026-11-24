@@ -5,7 +5,7 @@
   "build_plan": "BUILD_PLAN.md",
   "created": "2026-11-24",
   "complete": false,
-  "current_task": null,
+  "current_task": "M0-T1",
   "blocked_on": null,
   "milestones": [
     {
@@ -22,10 +22,10 @@
         {
           "id": "M0-T1",
           "desc": "Throwaway staging stack under /tmp/ns-spike",
-          "status": "pending",
+          "status": "done",
           "human_gated": false,
           "depends_on": [],
-          "commit": null
+          "commit": "c0afd88"
         },
         {
           "id": "H2",
