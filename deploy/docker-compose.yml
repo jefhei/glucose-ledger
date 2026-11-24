@@ -1,0 +1,50 @@
+# Production Nightscout stack (BUILD_PLAN M1-T1, PRD F1).
+#
+# This file holds no secret. Every value that could leak is a required variable and is
+# supplied at run time from ~/glucose/secret.env (0600), which lives outside the repo:
+#
+#   API_SECRET     32+ random bytes, hex — Nightscout's signing secret
+#   GLUCOSE_BIND_IP the LAN address the UI is published on (never 0.0.0.0)
+#   GLUCOSE_PORT    published port, defaults to 1337
+#
+# Validate the render without starting anything:
+#   docker compose --env-file ~/glucose/secret.env -f deploy/docker-compose.yml config
+#
+# The project name is pinned so the Mongo volume keeps the same identity whether this
+# file is run from deploy/ or from the installed copy in ~/glucose/stack/.
+#
+# Both images are pinned by tag, and the Mongo major is pinned to 4.4 deliberately:
+# the debian2 host CPU (Pentium Gold G5420) has no AVX, so MongoDB 5.0+ dies with
+# SIGILL (exit 132) — measured 2026-11-24, see spike/README.md. Never point a newer
+# Mongo major at this data directory; take a dump first (M2-T1).
+#
+# Hardening environment (AUTH_DEFAULT_ROLES=denied, DISPLAY_UNITS, TIME_FORMAT) lands
+# in M1-T3; access control proof in M1-T4; the make targets in M1-T5.
+
+name: glucose-ledger
+
+services:
+  mongo:
+    image: mongo:4.4
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    # No `ports:` on purpose — the database is reachable only on the compose network.
+
+  nightscout:
+    image: nightscout/cgm-remote-monitor:15.0.9
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    environment:
+      MONGO_CONNECTION: mongodb://mongo:27017/nightscout
+      API_SECRET: ${API_SECRET:?API_SECRET must be set (see ~/glucose/secret.env)}
+      # The MVP serves plain HTTP on the LAN only; no TLS terminator exists in front of
+      # it yet, and no inbound internet exposure is allowed (PRD F2, M7-T3 for remote).
+      INSECURE_USE_HTTP: "true"
+    ports:
+      # Host address is a required variable: the UI is LAN-bound, never all-interfaces.
+      - "${GLUCOSE_BIND_IP:?GLUCOSE_BIND_IP must be set to the LAN address}:${GLUCOSE_PORT:-1337}:1337"
+
+volumes:
+  mongo_data:
