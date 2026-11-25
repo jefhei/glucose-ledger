@@ -5,7 +5,7 @@
   "build_plan": "BUILD_PLAN.md",
   "created": "2026-11-24",
   "complete": false,
-  "current_task": "M1-T1",
+  "current_task": "M1-T2",
   "blocked_on": null,
   "milestones": [
     {
@@ -84,12 +84,12 @@
         {
           "id": "M1-T2",
           "desc": "Config loader for ~/glucose/secret.env (0600)",
-          "status": "pending",
+          "status": "done",
           "human_gated": false,
           "depends_on": [
             "M1-T1"
           ],
-          "commit": null
+          "commit": "aa4381c"
         },
         {
           "id": "M1-T3",
