@@ -37,6 +37,16 @@ spike/      the M0 read-path verdict, its evidence, and the throwaway staging st
 Deployment (not in this repo): `~/glucose/` for stack + data + secrets, `~/backups/glucose/`
 for dumps.
 
+## Deployment secrets
+
+`~/glucose/secret.env` (mode `0600`, never in the repo) is read by
+`glucoseledger.config.load_config()`. Keys: `API_SECRET` (32+ characters, no whitespace),
+`GLUCOSE_READ_TOKEN` (the 16 hex character token from the Nightscout admin UI),
+`GLUCOSE_BIND_IP` (LAN IPv4 — `0.0.0.0` is refused), plus optional `GLUCOSE_HOST`
+(defaults to the bind address), `GLUCOSE_PORT` (`1337`) and `DISPLAY_UNITS` (`mg/dl`).
+A missing file, a group/world-readable mode, or a malformed value fails with an actionable
+message; errors and `repr()` never contain a credential.
+
 ## Not a medical device
 
 Descriptive statistics only. No diagnosis, no dosing, no safety alerting. See the
