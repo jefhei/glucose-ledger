@@ -45,7 +45,9 @@ for dumps.
 `GLUCOSE_BIND_IP` (LAN IPv4 — `0.0.0.0` is refused), plus optional `GLUCOSE_HOST`
 (defaults to the bind address), `GLUCOSE_PORT` (`1337`) and `DISPLAY_UNITS` (`mg/dl`).
 A missing file, a group/world-readable mode, or a malformed value fails with an actionable
-message; errors and `repr()` never contain a credential.
+message; errors and `repr()` never contain a credential. The exposure model — one LAN
+address, no port forward, no TLS terminator in the MVP, remote access only through an
+overlay network later — is written down in `deploy/README.md`.
 
 ## Not a medical device
 

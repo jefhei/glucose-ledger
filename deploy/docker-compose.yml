@@ -18,8 +18,10 @@
 # SIGILL (exit 132) — measured 2026-11-24, see spike/README.md. Never point a newer
 # Mongo major at this data directory; take a dump first (M2-T1).
 #
-# Hardening environment (AUTH_DEFAULT_ROLES=denied, DISPLAY_UNITS, TIME_FORMAT) lands
-# in M1-T3; access control proof in M1-T4; the make targets in M1-T5.
+# Hardening (M1-T3): the UI serves nothing to an unauthenticated caller, renders in the
+# configured units without converting the stored mg/dL, and uses a 24-hour clock. The
+# exposure model — LAN bind, no port forward, no TLS terminator in the MVP — is written
+# down in deploy/README.md. Access-control proof lands in M1-T4; make targets in M1-T5.
 
 name: glucose-ledger
 
@@ -39,6 +41,16 @@ services:
     environment:
       MONGO_CONNECTION: mongodb://mongo:27017/nightscout
       API_SECRET: ${API_SECRET:?API_SECRET must be set (see ~/glucose/secret.env)}
+      # Every API read requires a token. "denied" is the only acceptable value here:
+      # anything else (readable, careportal, admin) exposes the store to an anonymous
+      # caller on the LAN. M1-T4 asserts the 401 against a deployed instance.
+      AUTH_DEFAULT_ROLES: denied
+      # Rendering only. sgv is stored and computed in mg/dL; this never converts a value
+      # in place (PRD Data Contracts). Override in secret.env, validated by
+      # glucoseledger.config (mg/dl | mmol).
+      DISPLAY_UNITS: ${DISPLAY_UNITS:-mg/dl}
+      # Quoted deliberately: compose requires string values, and 24 unquoted is an int.
+      TIME_FORMAT: "24"
       # The MVP serves plain HTTP on the LAN only; no TLS terminator exists in front of
       # it yet, and no inbound internet exposure is allowed (PRD F2, M7-T3 for remote).
       INSECURE_USE_HTTP: "true"
