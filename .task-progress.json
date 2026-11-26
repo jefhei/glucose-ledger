@@ -5,7 +5,7 @@
   "build_plan": "BUILD_PLAN.md",
   "created": "2026-11-24",
   "complete": false,
-  "current_task": "M1-T2",
+  "current_task": "M1-T3",
   "blocked_on": null,
   "milestones": [
     {
@@ -94,12 +94,12 @@
         {
           "id": "M1-T3",
           "desc": "Hardening env + deploy/README.md exposure notes",
-          "status": "pending",
+          "status": "done",
           "human_gated": false,
           "depends_on": [
             "M1-T1"
           ],
-          "commit": null
+          "commit": "ad09ba4"
         },
         {
           "id": "M1-T4",
