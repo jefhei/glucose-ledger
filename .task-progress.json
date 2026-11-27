@@ -5,7 +5,7 @@
   "build_plan": "BUILD_PLAN.md",
   "created": "2026-11-24",
   "complete": false,
-  "current_task": "M1-T3",
+  "current_task": "M1-T4",
   "blocked_on": null,
   "milestones": [
     {
@@ -104,12 +104,12 @@
         {
           "id": "M1-T4",
           "desc": "Auth proof test: unauth 401 / auth 200",
-          "status": "pending",
+          "status": "done",
           "human_gated": false,
           "depends_on": [
             "M1-T2"
           ],
-          "commit": null
+          "commit": "d6de6ac"
         },
         {
           "id": "M1-T5",
