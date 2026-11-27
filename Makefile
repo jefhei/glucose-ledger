@@ -1,7 +1,7 @@
 PY ?= $(if $(wildcard .venv/bin/python),.venv/bin/python,python3)
 STACK_DIR ?= deploy
 
-.PHONY: verify lint test stack-up stack-down stack-status backup drill sync status
+.PHONY: verify lint test authcheck stack-up stack-down stack-status backup drill sync status
 
 verify: lint test
 
@@ -10,6 +10,9 @@ lint:
 
 test:
 	@$(PY) -m pytest
+
+authcheck:
+	@PYTHONPATH=src $(PY) -m glucoseledger.authprobe
 
 stack-up:
 	@cd $(STACK_DIR) && docker compose up -d && echo "stack: up"

@@ -88,12 +88,47 @@ curl -s -o /dev/null -w '%{http_code}\n' http://${GLUCOSE_BIND_IP}:${GLUCOSE_POR
 
 `401` is the expected and passing answer; a JSON array means `AUTH_DEFAULT_ROLES` is
 wrong and the stack comes down before anything else is investigated (M1-T4 automates
-this check). From outside the LAN the same request must not resolve or connect at all.
+this check — see the next section). From outside the LAN the same request must not
+resolve or connect at all.
 
 The authorised form is `http://<token>@${GLUCOSE_BIND_IP}:${GLUCOSE_PORT}/api/v1`, which
 is what xDrip+ is pointed at. The token is the 16 hex character prefix of the SHA-1 of
 `API_SECRET`, so rotating the secret invalidates every token — that is the intended
 revocation path and the reason the secret never leaves the `0600` file.
+
+## Prove the access contract (M1-T4)
+
+`make authcheck` sends the two requests the build test asserts, against the stack that
+`~/glucose/secret.env` points at:
+
+```sh
+make authcheck            # or: PYTHONPATH=src python3 -m glucoseledger.authprobe
+PYTHONPATH=src python3 -m glucoseledger.authprobe --json     # deterministic payload
+```
+
+- unauthenticated `GET /api/v1/entries.json?count=1` must answer **401**. A `200` is
+  reported as `EXPOSED` and fails, whatever else is true of the stack;
+- the same path with the read token must answer **200** and return an entries array. A
+  `200` whose body is a login page is not an accepted read.
+
+Both authorised URL forms Nightscout accepts are tried, in this order, and the output
+names the one that answered:
+
+```
+http://<token>@<host>:<port>/api/v1                        # userinfo form, used by xDrip+
+http://<host>:<port>/api/v1/entries.json?token=<token>     # query form
+```
+
+Exit codes: `0` pass, `1` the contract is broken (open read, rejected token, or a `200`
+that is not an entries array), `2` no stack or no config — so a cron wrapper can tell
+"exposed" from "down" without parsing prose. Redirects are never followed: a `3xx` is
+recorded as a failure, because a redirect that lands on a `200` proves nothing about
+the anonymous answer.
+
+Inside `make verify` the same proof runs as `tests/test_auth_probe.py`. With no stack
+deployed it **skips visibly** (`skipped: no deployed stack ...`) instead of passing: a
+green auth test with nothing to prove against would be a false green. Bring the stack
+up and re-run `make verify` before treating M1 as done.
 
 ## Mongo is pinned, on purpose
 
